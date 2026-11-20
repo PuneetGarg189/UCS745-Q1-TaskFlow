@@ -10,6 +10,7 @@ import TaskFilters from './features/tasks/TaskFilters'
 import TaskFormModal from './features/tasks/TaskFormModal'
 import TaskList from './features/tasks/TaskList'
 import { useTasks } from './hooks/useTasks'
+import { filterTasks } from './utils/taskHelpers'
 
 export default function App() {
   const [filter, setFilter] = useState('all')
@@ -18,7 +19,7 @@ export default function App() {
   const [isFormOpen, setIsFormOpen] = useState(false)
   const [toast, setToast] = useState(null)
   const { tasks, error, addTask, updateTask, removeTask, toggleTask, stats } = useTasks()
-  const visibleTasks = tasks.filter((task) => (filter === 'all' || (filter === 'completed' ? task.completed : !task.completed)) && task.title.toLowerCase().includes(query.trim().toLowerCase()))
+  const visibleTasks = filterTasks(tasks, filter, query)
   const notify = (message, type = 'success') => setToast({ message, type })
   const openCreate = () => { setEditingTask(null); setIsFormOpen(true) }
   const saveTask = (data) => { const result = editingTask ? updateTask(editingTask.id, data) : addTask(data); if (result.ok) { setIsFormOpen(false); notify(editingTask ? 'Task updated.' : 'Task added.') } else notify(result.error, 'error'); return result }

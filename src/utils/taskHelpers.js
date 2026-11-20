@@ -1,5 +1,6 @@
 export function compareTasks(a, b) { if (a.completed !== b.completed) return a.completed ? 1 : -1; if (!a.completed) { if (!a.dueDate && b.dueDate) return 1; if (a.dueDate && !b.dueDate) return -1; if (a.dueDate && b.dueDate && a.dueDate !== b.dueDate) return a.dueDate.localeCompare(b.dueDate) } return a.createdAt.localeCompare(b.createdAt) || a.id.localeCompare(b.id) }
 export function sortTasks(tasks) { return [...tasks].sort(compareTasks) }
+export function filterTasks(tasks, status = 'all', query = '') { const needle = query.trim().toLowerCase(); return tasks.filter((task) => (status === 'all' || (status === 'completed' ? task.completed : !task.completed)) && task.title.toLowerCase().includes(needle)) }
 export function isOverdue(task, today = new Date()) { if (task.completed || !task.dueDate) return false; const localToday = [today.getFullYear(), String(today.getMonth() + 1).padStart(2, '0'), String(today.getDate()).padStart(2, '0')].join('-'); return task.dueDate < localToday }
 export function formatDueDate(value) { return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric', year: 'numeric' }).format(new Date(`${value}T12:00:00`)) }
 export function getStats(tasks) { return { total: tasks.length, pending: tasks.filter((task) => !task.completed).length, completed: tasks.filter((task) => task.completed).length } }
