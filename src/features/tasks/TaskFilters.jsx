@@ -1,0 +1,1 @@
+export default function TaskFilters({ value, onChange }) { return <div className="filters" role="group" aria-label="Filter tasks">{[['all', 'All'], ['pending', 'In progress'], ['completed', 'Completed']].map(([id, label]) => <button key={id} className={value === id ? 'selected' : ''} onClick={() => onChange(id)}>{label}</button>)}</div> }

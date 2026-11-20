@@ -1,0 +1,1 @@
+export default function SearchBar({ value, onChange }) { return <label className="search"><span aria-hidden="true">⌕</span><input type="search" value={value} onChange={(event) => onChange(event.target.value)} placeholder="Search tasks" aria-label="Search tasks by title" /></label> }

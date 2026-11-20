@@ -1,0 +1,1 @@
+export default function Header({ onAddTask }) { return <header className="header"><div className="breadcrumb"><span>Workspace</span><b>/</b><strong>Overview</strong></div><button className="button primary add-task" onClick={onAddTask}><span aria-hidden="true">+</span> Add task</button></header> }

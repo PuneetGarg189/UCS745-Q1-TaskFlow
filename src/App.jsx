@@ -1,122 +1,27 @@
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import AppLayout from './components/layout/AppLayout'
+import Header from './components/layout/Header'
+import Sidebar from './components/layout/Sidebar'
+import Toast from './components/common/Toast'
+import StatsOverview from './features/dashboard/StatsOverview'
+import EmptyState from './features/tasks/EmptyState'
+import SearchBar from './features/tasks/SearchBar'
+import TaskFilters from './features/tasks/TaskFilters'
+import TaskFormModal from './features/tasks/TaskFormModal'
+import TaskList from './features/tasks/TaskList'
+import { useTasks } from './hooks/useTasks'
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
-
-      <div className="ticks"></div>
-
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+export default function App() {
+  const [filter, setFilter] = useState('all')
+  const [query, setQuery] = useState('')
+  const [editingTask, setEditingTask] = useState(null)
+  const [isFormOpen, setIsFormOpen] = useState(false)
+  const [toast, setToast] = useState(null)
+  const { tasks, error, addTask, updateTask, removeTask, toggleTask, stats } = useTasks()
+  const visibleTasks = tasks.filter((task) => (filter === 'all' || (filter === 'completed' ? task.completed : !task.completed)) && task.title.toLowerCase().includes(query.trim().toLowerCase()))
+  const notify = (message, type = 'success') => setToast({ message, type })
+  const openCreate = () => { setEditingTask(null); setIsFormOpen(true) }
+  const saveTask = (data) => { const result = editingTask ? updateTask(editingTask.id, data) : addTask(data); if (result.ok) { setIsFormOpen(false); notify(editingTask ? 'Task updated.' : 'Task added.') } else notify(result.error, 'error'); return result }
+  const deleteTask = (task) => { if (window.confirm(`Delete “${task.title}”? This action cannot be undone.`)) { const result = removeTask(task.id); result.ok ? notify('Task deleted.') : notify(result.error, 'error') } }
+  return <AppLayout sidebar={<Sidebar activeFilter={filter} onSelect={setFilter} stats={stats} />}><Header onAddTask={openCreate} /><main className="dashboard" id="main-content">{error && <div className="storage-warning" role="alert">{error}</div>}<section className="hero" aria-labelledby="dashboard-title"><div><p className="eyebrow">Student workspace</p><h1 id="dashboard-title">Stay ahead of every deadline.</h1><p>Plan coursework, focus on what matters, and keep your momentum.</p></div><button className="mobile-add" onClick={openCreate}>+ Add task</button></section><StatsOverview stats={stats} /><section className="tasks-panel" aria-labelledby="tasks-title"><div className="section-heading"><div><h2 id="tasks-title">Your tasks</h2><p>{visibleTasks.length} {visibleTasks.length === 1 ? 'task' : 'tasks'} shown</p></div></div><div className="task-tools"><SearchBar value={query} onChange={setQuery} /><TaskFilters value={filter} onChange={setFilter} /></div>{visibleTasks.length ? <TaskList tasks={visibleTasks} onEdit={(task) => { setEditingTask(task); setIsFormOpen(true) }} onDelete={deleteTask} onToggle={(task) => { const result = toggleTask(task.id); result.ok ? notify(task.completed ? 'Task reopened.' : 'Task completed.') : notify(result.error, 'error') }} /> : <EmptyState hasTasks={tasks.length > 0} onAdd={openCreate} />}</section></main>{isFormOpen && <TaskFormModal task={editingTask} onClose={() => setIsFormOpen(false)} onSave={saveTask} />}{toast && <Toast {...toast} onClose={() => setToast(null)} />}</AppLayout>
 }
-
-export default App

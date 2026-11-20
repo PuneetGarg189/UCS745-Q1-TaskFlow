@@ -1,0 +1,3 @@
+const priorities = ['low', 'medium', 'high']
+export function validateTask(input) { const title = input.title?.trim() ?? ''; const description = input.description?.trim() ?? ''; if (!title || title.length > 80) return 'Enter a task title between 1 and 80 characters.'; if (description.length > 500) return 'Description cannot exceed 500 characters.'; if (!priorities.includes(input.priority)) return 'Choose a valid priority.'; if (input.dueDate && !/^\d{4}-\d{2}-\d{2}$/.test(input.dueDate)) return 'Enter a valid due date.'; return null }
+export function normalizeTask(input) { return { title: input.title.trim(), description: input.description.trim(), priority: input.priority, dueDate: input.dueDate || '' } }
