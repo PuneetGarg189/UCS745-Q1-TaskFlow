@@ -1,16 +1,77 @@
-# React + Vite
+# TaskFlow — Student Productivity Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+TaskFlow is a focused React application for organising academic work, tracking deadlines, and maintaining a clear view of coursework progress.
 
-Currently, two official plugins are available:
+## Problem statement
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Students often track assignments across notebooks, messages, and learning platforms. TaskFlow provides one simple browser-based workspace for recording tasks, prioritising them, and seeing what needs attention first.
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Create, edit, and delete tasks with confirmation.
+- Mark tasks complete or reopen them later.
+- Search titles case-insensitively and combine search with status filters.
+- Sort pending tasks by due date, keep undated tasks after dated work, and show completed tasks last.
+- Flag overdue incomplete tasks without time-zone conversion errors.
+- Persist tasks in browser `localStorage` under `taskflow.tasks.v1`.
+- Responsive, keyboard-friendly dashboard with accessible modal controls and reduced-motion support.
 
-## Expanding the Oxlint configuration
+## Technology stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+- React and Vite
+- JavaScript (ES6+), HTML5, and pure CSS3
+- React `useState` with a custom `useTasks` hook
+- Vitest
+- GitHub Actions and GitHub Pages
+
+## Folder structure
+
+```text
+src/
+├── components/       # Layout and reusable UI
+├── features/         # Dashboard and task UI
+├── hooks/            # useTasks state operations
+├── services/         # localStorage access
+├── styles/           # CSS variables, layout, components, responsive rules
+└── utils/            # validation and task business rules
+```
+
+## Install and run locally
+
+```bash
+npm install
+npm run dev
+```
+
+## Test, build, and preview
+
+```bash
+npm run test
+npm run build
+npm run preview
+```
+
+## GitHub Pages deployment
+
+The workflow in `.github/workflows/deploy.yml` tests and builds the application on each push to `main`, then deploys the generated `dist` folder using GitHub Pages Actions. After creating the public GitHub repository named `UCS745-Q1-TaskFlow`, open **Settings → Pages** and select **GitHub Actions** as the source. The expected URL is:
+
+`https://YOUR_GITHUB_USERNAME.github.io/UCS745-Q1-TaskFlow/`
+
+The Vite base path is configured for this repository name.
+
+## Data persistence
+
+Tasks are saved only in this browser profile through `localStorage`. They persist across refreshes and browser restarts, but do not synchronise across browsers or devices. If stored data cannot be parsed, TaskFlow preserves it rather than silently overwriting it and shows a recovery warning.
+
+## Current limitations
+
+- No user accounts or cross-device synchronisation.
+- No reminders or calendar integration.
+- Data is limited to the browser’s local storage capacity.
+
+## Future enhancements
+
+- Calendar and weekly planning views.
+- Optional task tags and course grouping.
+- Import/export of task data.
+- User-selectable themes.
