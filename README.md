@@ -1,6 +1,6 @@
 # TaskFlow — Student Productivity Manager
 
-TaskFlow is a focused React application for organising academic work, tracking deadlines, and maintaining a clear view of coursework progress.
+A lightweight planner for tracking assignments and study tasks.
 
 ## Problem statement
 
