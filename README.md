@@ -1,6 +1,7 @@
 # TaskFlow — Student Productivity Manager
 
-A clean dashboard for organizing coursework and deadlines.
+A lightweight student planner for organizing coursework,
+assignments, and deadlines.
 
 ## Problem statement
 
