@@ -55,7 +55,7 @@ npm run preview
 
 The workflow in `.github/workflows/deploy.yml` tests and builds the application on each push to `main`, then deploys the generated `dist` folder using GitHub Pages Actions. After creating the public GitHub repository named `UCS745-Q1-TaskFlow`, open **Settings → Pages** and select **GitHub Actions** as the source. The expected URL is:
 
-`https://YOUR_GITHUB_USERNAME.github.io/UCS745-Q1-TaskFlow/`
+`Live website: https://puneetgarg189.github.io/UCS745-Q1-TaskFlow/`
 
 The Vite base path is configured for this repository name.
 
